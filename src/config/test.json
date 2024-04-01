@@ -1,0 +1,95 @@
+{
+    "description": "Cette machine a pour effet de doubler le nombre de '1', en intercalant un '0' entre les deux séries. Par exemple, '111' devient '1110111'.",
+    "initial_state": "e1",
+    "tape": {
+        "initial_memory": [
+            1,
+            1
+        ],
+        "blank_symbol": 0
+    },
+    "program": [
+        {
+            "state": "e1",
+            "inputs": [
+                {
+                    "input": 1,
+                    "write": 0,
+                    "move": "R",
+                    "next_state": "e2"
+                },
+                {
+                    "input": 0
+                }
+            ]
+        },
+        {
+            "state": "e2",
+            "inputs": [
+                {
+                    "input": 1,
+                    "write": 1,
+                    "move": "R",
+                    "next_state": "e2"
+                },
+                {
+                    "input": 0,
+                    "write": 0,
+                    "move": "R",
+                    "next_state": "e3"
+                }
+            ]
+        },
+        {
+            "state": "e3",
+            "inputs": [
+                {
+                    "input": 1,
+                    "write": 1,
+                    "move": "R",
+                    "next_state": "e3"
+                },
+                {
+                    "input": 0,
+                    "write": 1,
+                    "move": "L",
+                    "next_state": "e4"
+                }
+            ]
+        },
+        {
+            "state": "e4",
+            "inputs": [
+                {
+                    "input": 1,
+                    "write": 1,
+                    "move": "L",
+                    "next_state": "e4"
+                },
+                {
+                    "input": 0,
+                    "write": 0,
+                    "move": "L",
+                    "next_state": "e5"
+                }
+            ]
+        },
+        {
+            "state": "e5",
+            "inputs": [
+                {
+                    "input": 1,
+                    "write": 1,
+                    "move": "L",
+                    "next_state": "e5"
+                },
+                {
+                    "input": 0,
+                    "write": 1,
+                    "move": "R",
+                    "next_state": "e1"
+                }
+            ]
+        }
+    ]
+}
