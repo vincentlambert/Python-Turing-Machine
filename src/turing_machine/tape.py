@@ -6,8 +6,20 @@ class Tape:
         self._init_data = memory
         self.reset()
 
-    def reset(self) -> None:
+    @property
+    def data(self) -> list:
+        return self._data
+
+    @property
+    def blank_symbol(self) -> object:
+        return self._blank_symbol
+
+    def reset(self, data=None) -> None:
         self._position = 0
+        if data is not None:
+            self._data = data.copy()
+            return
+
         if self._init_data is None:
             self._data = [self._blank_symbol]
         else:

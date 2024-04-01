@@ -5,15 +5,24 @@ from .tape import Tape
 
 
 class TuringMachine:
-    def __init__(self, config_file: str = None) -> None:
-        if config_file is None:
-            raise ValueError("No configuration file provided")
-        self._load_config(config_file)
+    def __init__(self, config_dict: dict = None, config_file: str = None) -> None:
+        if config_dict is None and config_file is None:
+            raise ValueError("No configuration provided")
+
+        if config_dict is not None and config_file is not None:
+            raise ValueError("Configuration conflict")
+
+        if config_file is not None:
+            config_dict = self._load_config(config_file)
+
+        self._apply_config(config_dict)
 
     def _load_config(self, config_file: str) -> dict:
         with open(config_file, "r") as f:
             config = json.load(f)
+        return config
 
+    def _apply_config(self, config: dict) -> None:
         #
         # Init tape
         #
@@ -54,12 +63,20 @@ class TuringMachine:
         return self._current_state
 
     @property
-    def memory(self) -> str:
-        return self._tape._data
+    def tape(self) -> str:
+        return self._tape
 
-    def reset(self) -> None:
+    @property
+    def memory(self) -> str:
+        return self._tape.data
+
+    # @property
+    # def memory(self) -> str:
+    #     return self._tape.data
+
+    def reset(self, memory=None) -> None:
         self._current_state = self.initial_state
-        self._tape.reset()
+        self._tape.reset(data=memory)
 
     def run(self, steps=1) -> None:
         """Execute the Turing Machine for a number of steps or stops if:
@@ -81,21 +98,24 @@ class TuringMachine:
         while True:
             tag = f"{self._current_state}#{self._tape.read()}"
             if tag not in self._transitions:
-                break
+                raise ValueError(f"No transition for: {tag}")
 
             new_state = self._transitions[tag].execute()
-            if new_state is None:
-                break
 
             self._current_state = new_state
             print(
-                f"Move from: {self._current_state}\tto: {new_state}\twith: {self._tape._data}"
+                f"Move from: {self._current_state}\tto: {new_state}\twith: {self._tape.data}"
             )
+
+            if new_state is None:
+                print("Final state reached")
+                break
+
             steps -= 1
             if steps == 0:
                 break
 
 
 if __name__ == "__main__":
-    tm = TuringMachine("config/test.json")
+    tm = TuringMachine(config_file="config/test.json")
     tm.run(15)

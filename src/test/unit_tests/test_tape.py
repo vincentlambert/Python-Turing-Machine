@@ -92,3 +92,14 @@ def test_reset():
     assert tape.read() == "a"
     tape.move_right()
     assert tape.read() == "b"
+
+
+def test_reset():
+    tape = Tape(["a", "b"])
+    assert tape.read() == "a"
+    tape.move_right()
+    assert tape.read() == "b"
+    tape.reset([1, 2])
+    assert tape.read() == 1
+    tape.move_right()
+    assert tape.read() == 2
